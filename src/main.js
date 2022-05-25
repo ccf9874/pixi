@@ -91,16 +91,6 @@ navText.position.set(app.screen.width / 2, 215);
 const startBtn = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
 BoxContainer.addChild(startBtn);
 
-startBtn.on("pointerdown", () => {
-  console.log("게임시작");
-
-  BoxContainer.removeChild(startBtn, char, navText);
-  BoxContainer.addChild(back, score, circleRed, circleBlue, circleGreen);
-  gameBox.addChild(healthBar);
-  healthBar.addChild(innerBar, outerBar);
-  gameContainer.addChild(mosterBox);
-});
-
 const startText = new Texts("게임 시작", 600, 700);
 startBtn.addChild(startText);
 
@@ -153,19 +143,6 @@ const circleRed = new Circle(450, 750, 40, 0xfe0000);
 const circleBlue = new Circle(600, 750, 40, 0x0071c1);
 const circleGreen = new Circle(750, 750, 40, 0x70ad46);
 
-circleRed.on("click", () => {
-  score.score += 100;
-  console.log("red ", score.score);
-});
-circleBlue.on("click", () => {
-  score.score += 100;
-  console.log("blue ", score.score);
-});
-circleGreen.on("click", () => {
-  score.score += 100;
-  console.log("green ", score.score);
-});
-
 const healthBar = new Container();
 healthBar.position.set(400, 240);
 gameBox.addChild(healthBar);
@@ -176,64 +153,6 @@ const outerBar = new Rectangle(0, 0, 400, 30, 0xff3300, 10, false, false);
 healthBar.outer = outerBar;
 healthBar.outer.width = (400 / 120) * 1;
 const mosterBox = new Container();
-// for (let i = 5; i > 0; i--) {
-//   console.log(Math.round((Math.random() * 10 * i) % 2));
-
-//   if (Math.round((Math.random() * 10 * i) % 2) === 0) {
-//     const char1Texture = new Texture.from("static/charList1.png");
-//     const char1 = new Image(
-//       600,
-//       700 - (i + 1) * 60,
-//       char1Texture,
-//       "blue",
-//       160 * 0.95 ** i,
-//       160 * 0.95 ** i,
-//       true,
-//       true
-//     );
-
-//     mosterBox.addChild(char1);
-//   } else if (Math.round((Math.random() * 10 * i) % 2) === 1) {
-//     const char2Texture = new Texture.from("static/charList2.png");
-//     const char2 = new Image(
-//       600,
-//       700 - (i + 1) * 60,
-//       char2Texture,
-//       "blue",
-//       160 * 0.95 ** i,
-//       160 * 0.95 ** i,
-//       true,
-//       true
-//     );
-//     mosterBox.addChild(char2);
-//   } else if (Math.round((Math.random() * 10 * i) % 2) === 2) {
-//     const char3Texture = new Texture.from("static/charList3.png");
-//     const char3 = new Image(
-//       600,
-//       700 - (i + 1) * 60,
-//       char3Texture,
-//       "blue",
-//       160 * 0.95 ** i,
-//       160 * 0.95 ** i,
-//       true,
-//       true
-//     );
-//     mosterBox.addChild(char3);
-//   } else {
-//     const char1Texture = new Texture.from("static/charList1.png");
-//     const char1 = new Image(
-//       600,
-//       700 - (i + 1) * 60,
-//       char1Texture,
-//       "blue",
-//       160 * 0.95 ** i,
-//       160 * 0.95 ** i,
-//       true,
-//       true
-//     );
-//     mosterBox.addChild(char1);
-//   }
-// }
 
 const tickers = new PIXI.Ticker();
 tickers.lastTime = 0;
@@ -245,39 +164,54 @@ tickers.add((deltaTime) => {
 });
 tickers.start();
 
-// let time = 120;
-// ticker.stop();
-
-// ticker.add((delta) => {
-//   // time = Math.round(120 - ticker.lastTime / 1000);
-
-//   if (time > 0) {
-//     healthBar.outer.width = (400 / 120) * (120 - ticker.deltaTime);
-//   } else {
-//     healthBar.outer.width = 0;
-//     return;
-//   }
-// });
-
 const charListContainer = new Container();
 app.stage.addChild(charListContainer);
+
+const manyCharList = [];
+for (i = 0; i < 999; i++) {
+  const list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
+  const charsrc = list[Math.floor(Math.random() * 3)];
+  const charTexture = new Texture.from(charsrc);
+  const char = new Image(600, 350 + i * 45, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
+  if (charsrc === list[0]) {
+    char.name = "red";
+  } else if (charsrc === list[1]) {
+    char.name = "green";
+  } else if (charsrc === list[2]) {
+    char.name = "blue";
+  }
+
+  manyCharList.push(char);
+  const sixList = manyCharList.slice(0, 6);
+  const restList = manyCharList.slice(6);
+}
+const sixList = manyCharList.slice(0, 6);
+const restList = manyCharList.slice(6);
+
+console.log(9874, sixList[5].name);
+sixList.pop();
+sixList.push(restList[0]);
+console.log(9874, sixList[5].name);
+restList.shift();
+console.log(9874, restList);
 
 const charList = [];
 for (var i = 0; i < 6; i++) {
   const list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
-  const charname = list[Math.floor(Math.random() * 3)];
-  console.log(charname);
-  const charTexture = new Texture.from(charname);
+  const charsrc = list[Math.floor(Math.random() * 3)];
+  console.log(charsrc);
+  const charTexture = new Texture.from(charsrc);
   const char = new Image(600, 350 + i * 45, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
-  if (charname === list[0]) {
+  if (charsrc === list[0]) {
     char.name = "red";
-  } else if (charname === list[1]) {
+  } else if (charsrc === list[1]) {
     char.name = "green";
-  } else if (charname === list[2]) {
+  } else if (charsrc === list[2]) {
     char.name = "blue";
   }
   charList.push(char);
-
+  const sixList = manyCharList.slice(0, 6);
+  const restList = manyCharList.slice(6);
   startBtn.on("pointerdown", () => {
     console.log("게임시작");
     charListContainer.addChild(char);
@@ -288,3 +222,45 @@ for (var i = 0; i < 6; i++) {
     charListContainer.removeChild(char);
   });
 }
+
+startBtn.on("pointerdown", () => {
+  console.log("게임시작");
+  BoxContainer.removeChild(startBtn, char, navText);
+  BoxContainer.addChild(back, score, circleRed, circleBlue, circleGreen);
+  gameBox.addChild(healthBar);
+  healthBar.addChild(innerBar, outerBar);
+  gameContainer.addChild(mosterBox);
+});
+
+circleRed.on("click", () => {
+  if (charList[5].name === "red") {
+    score.score += 100;
+    charListContainer.y += 50;
+    charListContainer.removeChild(charList.at(-1));
+  } else {
+    console.log("X");
+  }
+  console.log("red ", score.score);
+});
+
+circleBlue.on("click", () => {
+  if (charList[5].name === "blue") {
+    score.score += 100;
+    charListContainer.y += 45;
+    charListContainer.removeChild(charList.at(-1));
+  } else {
+    console.log("X");
+  }
+  console.log("blue ", score.score);
+});
+circleGreen.on("click", () => {
+  if (charList[5].name === "green") {
+    score.score += 100;
+    charListContainer.y += 45;
+    charListContainer.removeChild(charList.at(-1));
+  } else {
+    console.log("X");
+  }
+  console.log("green ", score.score);
+});
+function screen() {}
