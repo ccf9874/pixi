@@ -103,17 +103,22 @@ BoxContainer.addChild(char);
 const backTexture = new Texture.from("static/back.png");
 const back = new Image(400, 180, backTexture, "back", 40, 25, true, true);
 
-back.on("pointerdown", () => {
-  console.log("뒤로가기");
-  BoxContainer.addChild(startBtn, char, navText);
-  BoxContainer.removeChild(back, score, circleRed, circleBlue, circleGreen);
-  gameBox.removeChild(healthBar);
-  healthBar.removeChild(innerBar, outerBar);
-  gameContainer.removeChild(mosterBox);
-});
-
 const gameContainer = new Container();
 BoxContainer.addChild(gameContainer);
+
+const waitContainer = new Container();
+BoxContainer.addChild(waitContainer);
+const waitText = new Texts("READY", 600, 500, {
+  fill: 0xffffff,
+  fontSize: 70,
+  fontWeight: "700",
+});
+const waitText2 = new Texts("GO!", 600, 500, {
+  fill: 0xffffff,
+  fontSize: 70,
+  fontWeight: "700",
+});
+const waitBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
 
 const gameBox = new Graphics();
 
@@ -165,43 +170,15 @@ tickers.add((deltaTime) => {
 tickers.start();
 
 const charListContainer = new Container();
-app.stage.addChild(charListContainer);
-
-const manyCharList = [];
-for (i = 0; i < 999; i++) {
-  const list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
-  const charsrc = list[Math.floor(Math.random() * 3)];
-  const charTexture = new Texture.from(charsrc);
-  const char = new Image(600, 350 + i * 45, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
-  if (charsrc === list[0]) {
-    char.name = "red";
-  } else if (charsrc === list[1]) {
-    char.name = "green";
-  } else if (charsrc === list[2]) {
-    char.name = "blue";
-  }
-
-  manyCharList.push(char);
-  const sixList = manyCharList.slice(0, 6);
-  const restList = manyCharList.slice(6);
-}
-const sixList = manyCharList.slice(0, 6);
-const restList = manyCharList.slice(6);
-
-console.log(9874, sixList[5].name);
-sixList.pop();
-sixList.push(restList[0]);
-console.log(9874, sixList[5].name);
-restList.shift();
-console.log(9874, restList);
+gameContainer.addChild(charListContainer);
 
 const charList = [];
-for (var i = 0; i < 6; i++) {
+for (let i = 0; i < 999; i++) {
   const list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
   const charsrc = list[Math.floor(Math.random() * 3)];
   console.log(charsrc);
   const charTexture = new Texture.from(charsrc);
-  const char = new Image(600, 350 + i * 45, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
+  const char = new Image(600, 350 + i * 50, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
   if (charsrc === list[0]) {
     char.name = "red";
   } else if (charsrc === list[1]) {
@@ -210,57 +187,91 @@ for (var i = 0; i < 6; i++) {
     char.name = "blue";
   }
   charList.push(char);
-  const sixList = manyCharList.slice(0, 6);
-  const restList = manyCharList.slice(6);
-  startBtn.on("pointerdown", () => {
-    console.log("게임시작");
-    charListContainer.addChild(char);
-    console.log(char.name);
-  });
-  back.on("pointerdown", () => {
-    console.log("뒤로가기");
-    charListContainer.removeChild(char);
-  });
 }
+
+const sixList = charList.slice(0, 6);
+const restList = charList.slice(6);
+
+back.on("pointerdown", () => {
+  console.log("뒤로가기");
+  BoxContainer.addChild(startBtn, char, navText);
+  gameContainer.removeChild(back, score, circleRed, circleBlue, circleGreen);
+  gameBox.removeChild(healthBar);
+  healthBar.removeChild(innerBar, outerBar);
+  gameContainer.removeChild(mosterBox);
+  for (let i = 0; i < 6; i++) {
+    charListContainer.removeChild(sixList[i]);
+  }
+});
 
 startBtn.on("pointerdown", () => {
   console.log("게임시작");
   BoxContainer.removeChild(startBtn, char, navText);
-  BoxContainer.addChild(back, score, circleRed, circleBlue, circleGreen);
+  gameContainer.addChild(back, score, circleRed, circleBlue, circleGreen);
   gameBox.addChild(healthBar);
   healthBar.addChild(innerBar, outerBar);
   gameContainer.addChild(mosterBox);
+  for (let i = 0; i < 6; i++) {
+    charListContainer.addChild(sixList[i]);
+  }
+  waitContainer.addChild(waitBox);
+  waitContainer.addChild(waitText);
+  waitBox.alpha = 0.6;
+  setTimeout(() => {
+    waitContainer.removeChild(waitText);
+    waitContainer.addChild(waitText2);
+  }, 250);
+  setTimeout(() => {
+    BoxContainer.removeChild(waitContainer);
+  }, 1250);
 });
 
 circleRed.on("click", () => {
-  if (charList[5].name === "red") {
+  if (sixList[5].name === "red") {
     score.score += 100;
     charListContainer.y += 50;
-    charListContainer.removeChild(charList.at(-1));
+    charListContainer.removeChild(sixList.at(-1));
+    sixList.pop();
+    sixList.unshift(restList[0]);
+    restList.shift();
+    charListContainer.addChild(sixList.at(-1));
+    charListContainer.y -= 50;
   } else {
     console.log("X");
   }
   console.log("red ", score.score);
+  console.log(sixList);
 });
 
 circleBlue.on("click", () => {
-  if (charList[5].name === "blue") {
+  if (sixList[5].name === "blue") {
     score.score += 100;
-    charListContainer.y += 45;
-    charListContainer.removeChild(charList.at(-1));
+    charListContainer.y += 50;
+    charListContainer.removeChild(sixList.at(-1));
+    sixList.pop();
+    sixList.unshift(restList[0]);
+    restList.shift();
+    charListContainer.addChild(sixList.at(-1));
+    charListContainer.y -= 50;
   } else {
     console.log("X");
   }
   console.log("blue ", score.score);
+  console.log(sixList);
 });
 circleGreen.on("click", () => {
-  if (charList[5].name === "green") {
+  if (sixList[5].name === "green") {
     score.score += 100;
-    charListContainer.y += 45;
-    charListContainer.removeChild(charList.at(-1));
+    charListContainer.y += 50;
+    charListContainer.removeChild(sixList.at(-1));
+    sixList.pop();
+    sixList.unshift(restList[0]);
+    restList.shift();
+    charListContainer.addChild(sixList.at(-1));
+    charListContainer.y -= 50;
   } else {
     console.log("X");
   }
   console.log("green ", score.score);
+  console.log(sixList);
 });
-function screen() {}
