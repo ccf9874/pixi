@@ -206,6 +206,19 @@ back.on("pointerdown", () => {
 
 startBtn.on("pointerdown", () => {
   console.log("게임시작");
+  circleRed.interactive = false;
+  circleBlue.interactive = false;
+  circleGreen.interactive = false;
+  setTimeout(() => {
+    waitContainer.removeChild(waitText);
+    waitContainer.addChild(waitText2);
+  }, 1000);
+  setTimeout(() => {
+    BoxContainer.removeChild(waitContainer);
+    circleRed.interactive = true;
+    circleBlue.interactive = true;
+    circleGreen.interactive = true;
+  }, 1250);
   BoxContainer.removeChild(startBtn, char, navText);
   gameContainer.addChild(back, score, circleRed, circleBlue, circleGreen);
   gameBox.addChild(healthBar);
@@ -217,13 +230,6 @@ startBtn.on("pointerdown", () => {
   waitContainer.addChild(waitBox);
   waitContainer.addChild(waitText);
   waitBox.alpha = 0.6;
-  setTimeout(() => {
-    waitContainer.removeChild(waitText);
-    waitContainer.addChild(waitText2);
-  }, 250);
-  setTimeout(() => {
-    BoxContainer.removeChild(waitContainer);
-  }, 1250);
 });
 
 circleRed.on("click", () => {
