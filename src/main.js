@@ -61,6 +61,9 @@ class Circle extends Graphics {
     this.lineStyle(3, 0x000000, 1);
     this.drawCircle(x, y, d);
   }
+  onClick() {
+    console.log("hi");
+  }
 }
 class Rectangle extends Graphics {
   constructor(
@@ -82,6 +85,7 @@ class Rectangle extends Graphics {
     this.endFill();
   }
 }
+
 const BoxContainer = new Container();
 app.stage.addChild(BoxContainer);
 
@@ -132,17 +136,108 @@ const waitText2 = new Texts("GO!", 600, 500, {
   fill: 0xffffff,
   fontSize: 70,
 });
+const seconds = new Texts("", 200, 15, {
+  fill: 0x000000,
+  fontSize: 25,
+});
+
 const circleRed = new Circle(450, 750, 40, 0xfe0000);
 const circleBlue = new Circle(600, 750, 40, 0x0071c1);
 const circleGreen = new Circle(750, 750, 40, 0x70ad46);
+
 const healthBar = new Container();
 healthBar.position.set(400, 240);
 healthBar.outer = outerBar;
-const innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10, false, false);
-const outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10, false, false);
+
+const innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10);
+const outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10);
+
 const charListContainer = new Container();
+
+const endBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
+endBox.alpha = 0.6;
+const endText = new Texts("게임종료!", 600, 300, {
+  fill: 0xffffff,
+  fontSize: 50,
+});
+const exitText = new Texts("확인", 600, 700, {
+  fill: 0xffffff,
+  fontSize: 30,
+});
+const endScore = new Texts("", 600, 400, {
+  fill: 0xffffff,
+  fontSize: 80,
+});
+const exitButton = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
 const tickers = new PIXI.Ticker();
 let scoreNumber = 0;
+
+const onButtonClick = (color) => {
+  if (viewList[5].name === color) {
+    charListContainer.y += 50;
+    charRender();
+    score.text = `${scoreNumber} 점`;
+  } else {
+    console.log("X");
+    onCircleIntercative(false);
+    setTimeout(() => {
+      onCircleIntercative(true);
+    }, 750);
+  }
+  console.log(color, scoreNumber);
+};
+
+const charRender = () => {
+  gameContainer.removeChild(charListContainer);
+  viewList.pop();
+  viewList.unshift(restList[0]);
+  restList.shift();
+  scoreNumber += 100;
+
+  for (let i = 0; i < 6; i++) {
+    const charTexture = new Texture.from(
+      viewList[i]._texture.textureCacheIds[0]
+    );
+    const char = new Image(
+      600,
+      350 + i * 50,
+      charTexture,
+      "",
+      160 * 0.95 ** (6 - i),
+      160 * 0.95 ** (6 - i)
+    );
+    if (viewList[i] === list[0]) {
+      char.name = "red";
+    } else if (viewList[i] === list[1]) {
+      char.name = "green";
+    } else if (viewList[i] === list[2]) {
+      char.name = "blue";
+    }
+  }
+  console.log("new", viewList);
+  gameContainer.addChild(charListContainer);
+};
+const onBack = () => {
+  BoxContainer.addChild(startBtn, char, navText);
+  gameContainer.removeChild(
+    back,
+    score,
+    circleRed,
+    circleBlue,
+    circleGreen,
+    healthBar
+  );
+  healthBar.removeChild(innerBar, outerBar);
+  for (let i = 0; i < 6; i++) {
+    charListContainer.removeChild(viewList[i]);
+  }
+  gameContainer.removeChild(charListContainer);
+};
+const onCircleIntercative = (bool) => {
+  circleRed.interactive = bool;
+  circleBlue.interactive = bool;
+  circleGreen.interactive = bool;
+};
 
 BoxContainer.addChild(
   box,
@@ -158,14 +253,13 @@ startBtn.addChild(startText);
 gameContainer.addChild(healthBar, charListContainer);
 
 const charList = [];
+const list = [
+  "static/charList1.png",
+  "static/charList2.png",
+  "static/charList3.png",
+];
 for (let i = 0; i < 999; i++) {
-  const list = [
-    "static/charList1.png",
-    "static/charList2.png",
-    "static/charList3.png",
-  ];
   const charsrc = list[Math.floor(Math.random() * 3)];
-  console.log(charsrc);
   const charTexture = new Texture.from(charsrc);
   const char = new Image(
     600,
@@ -184,16 +278,15 @@ for (let i = 0; i < 999; i++) {
   }
   charList.push(char);
 }
-
 const viewList = charList.slice(0, 6);
 const restList = charList.slice(6);
-startBtn.on("pointerdown", () => {
-  BoxContainer.addChild(waitContainer);
 
+startBtn.on("click", () => {
+  BoxContainer.addChild(waitContainer);
+  gameContainer.addChild(charListContainer);
+  outerBar.width = 400;
   console.log("게임시작");
-  circleRed.interactive = false;
-  circleBlue.interactive = false;
-  circleGreen.interactive = false;
+  onCircleIntercative(false);
   setTimeout(() => {
     waitContainer.removeChild(waitText);
     waitContainer.addChild(waitText2);
@@ -201,22 +294,22 @@ startBtn.on("pointerdown", () => {
   setTimeout(() => {
     waitContainer.removeChild(waitText2);
     BoxContainer.removeChild(waitContainer);
-    circleRed.interactive = true;
-    circleBlue.interactive = true;
-    circleGreen.interactive = true;
-
+    onCircleIntercative(true);
     let time = 0;
     tickers.autoStart = false;
     tickers.add((deltaTime) => {
       // do something every frame
       time += deltaTime / 60;
-      console.log("time is ", Math.round(time));
-      outerBar.width -= (deltaTime * 400 * 10) / (60 * 60);
-      console.log(Math.floor(outerBar.width));
-
+      console.log(Math.floor(time));
+      outerBar.width -= (deltaTime * 400) / (60 * 60);
+      seconds.text = `${60 - Math.floor(time)} 초`;
       if (outerBar.width < 0) {
         outerBar.width = 0;
         tickers.stop();
+        onCircleIntercative(false);
+        endScore.text = `${scoreNumber} 점`;
+        BoxContainer.addChild(endBox, endText, endScore, exitButton);
+        exitButton.addChild(exitText);
       }
     });
     tickers.start();
@@ -230,105 +323,25 @@ startBtn.on("pointerdown", () => {
     circleGreen,
     healthBar
   );
-  healthBar.addChild(innerBar, outerBar);
-
+  healthBar.addChild(innerBar, outerBar, seconds);
+  waitContainer.addChild(waitBox, waitText);
+  waitBox.alpha = 0.6;
   for (let i = 0; i < 6; i++) {
     charListContainer.addChild(viewList[i]);
   }
-  waitContainer.addChild(waitBox, waitText);
-  waitBox.alpha = 0.6;
 });
 back.on("pointerdown", () => {
-  console.log("뒤로가기");
-  BoxContainer.addChild(startBtn, char, navText);
-  gameContainer.removeChild(
-    back,
-    score,
-    circleRed,
-    circleBlue,
-    circleGreen,
-    healthBar
-  );
+  onBack();
   healthBar.removeChild(innerBar, outerBar);
   tickers.stop();
   outerBar.width = 400;
-  for (let i = 0; i < 6; i++) {
-    charListContainer.removeChild(viewList[i]);
-  }
 });
-
-circleRed.on("click", () => {
-  if (viewList[5].name === "red") {
-    scoreNumber += 100;
-    score.text = `${scoreNumber} 점`;
-    charListContainer.y += 50;
-    charListContainer.removeChild(viewList.at(-1));
-    viewList.pop();
-    viewList.unshift(restList[0]);
-    restList.shift();
-    charListContainer.addChild(viewList.at(-1));
-    charListContainer.y -= 50;
-  } else {
-    console.log("X");
-    circleRed.interactive = false;
-    circleBlue.interactive = false;
-    circleGreen.interactive = false;
-    setTimeout(() => {
-      circleRed.interactive = true;
-      circleBlue.interactive = true;
-      circleGreen.interactive = true;
-    }, 750);
-  }
-  console.log("red ", scoreNumber);
-  console.log(viewList);
+exitButton.on("click", () => {
+  onBack();
+  BoxContainer.removeChild(endBox, endText, endScore, exitButton);
+  exitButton.removeChild(exitText);
+  outerBar.width = 400;
 });
-circleBlue.on("click", () => {
-  if (viewList[5].name === "blue") {
-    scoreNumber += 100;
-    score.text = `${scoreNumber} 점`;
-    charListContainer.y += 50;
-    charListContainer.removeChild(viewList.at(-1));
-    viewList.pop();
-    viewList.unshift(restList[0]);
-    restList.shift();
-    charListContainer.addChild(viewList.at(-1));
-    charListContainer.y -= 50;
-  } else {
-    console.log("X");
-    circleRed.interactive = false;
-    circleBlue.interactive = false;
-    circleGreen.interactive = false;
-    setTimeout(() => {
-      circleRed.interactive = true;
-      circleBlue.interactive = true;
-      circleGreen.interactive = true;
-    }, 750);
-  }
-  console.log("blue ", scoreNumber);
-  console.log(viewList);
-});
-circleGreen.on("click", () => {
-  if (viewList[5].name === "green") {
-    scoreNumber += 100;
-    score.text = `${scoreNumber} 점`;
-    charListContainer.y += 50;
-    charListContainer.removeChild(viewList.at(-1));
-    viewList.pop();
-    viewList.unshift(restList[0]);
-    restList.shift();
-    charListContainer.addChild(viewList.at(-1));
-    charListContainer.y -= 50;
-  } else {
-    console.log("X");
-    circleRed.interactive = false;
-    circleBlue.interactive = false;
-    circleGreen.interactive = false;
-    setTimeout(() => {
-      circleRed.interactive = true;
-      circleBlue.interactive = true;
-      circleGreen.interactive = true;
-    }, 750);
-  }
-  console.log("green ", scoreNumber);
-  console.log(viewList);
-});
+circleRed.on("click", () => onButtonClick("red"));
+circleBlue.on("click", () => onButtonClick("blue"));
+circleGreen.on("click", () => onButtonClick("green"));
