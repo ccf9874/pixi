@@ -172,87 +172,9 @@ const exitButton = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
 const tickers = new PIXI.Ticker();
 let scoreNumber = 0;
 
-const onButtonClick = (color) => {
-  if (viewList[5].name === color) {
-    charListContainer.y += 50;
-    charRender();
-    score.text = `${scoreNumber} 점`;
-  } else {
-    console.log("X");
-    onCircleIntercative(false);
-    setTimeout(() => {
-      onCircleIntercative(true);
-    }, 750);
-  }
-  console.log(color, scoreNumber);
-};
-
-const charRender = () => {
-  gameContainer.removeChild(charListContainer);
-  viewList.pop();
-  viewList.unshift(restList[0]);
-  restList.shift();
-  scoreNumber += 100;
-
-  for (let i = 0; i < 6; i++) {
-    const charTexture = new Texture.from(
-      viewList[i]._texture.textureCacheIds[0]
-    );
-    const char = new Image(
-      600,
-      350 + i * 50,
-      charTexture,
-      "",
-      160 * 0.95 ** (6 - i),
-      160 * 0.95 ** (6 - i)
-    );
-    if (viewList[i] === list[0]) {
-      char.name = "red";
-    } else if (viewList[i] === list[1]) {
-      char.name = "green";
-    } else if (viewList[i] === list[2]) {
-      char.name = "blue";
-    }
-  }
-  console.log("new", viewList);
-  gameContainer.addChild(charListContainer);
-};
-const onBack = () => {
-  BoxContainer.addChild(startBtn, char, navText);
-  gameContainer.removeChild(
-    back,
-    score,
-    circleRed,
-    circleBlue,
-    circleGreen,
-    healthBar
-  );
-  healthBar.removeChild(innerBar, outerBar);
-  for (let i = 0; i < 6; i++) {
-    charListContainer.removeChild(viewList[i]);
-  }
-  gameContainer.removeChild(charListContainer);
-};
-const onCircleIntercative = (bool) => {
-  circleRed.interactive = bool;
-  circleBlue.interactive = bool;
-  circleGreen.interactive = bool;
-};
-
-BoxContainer.addChild(
-  box,
-  introBox,
-  titleText,
-  navText,
-  startBtn,
-  char,
-  gameContainer,
-  waitContainer
-);
-startBtn.addChild(startText);
-gameContainer.addChild(healthBar, charListContainer);
-
-const charList = [];
+const srcList = []; // 999
+const charList = []; // start
+const newList = []; // correct
 const list = [
   "static/charList1.png",
   "static/charList2.png",
@@ -260,32 +182,14 @@ const list = [
 ];
 for (let i = 0; i < 999; i++) {
   const charsrc = list[Math.floor(Math.random() * 3)];
-  const charTexture = new Texture.from(charsrc);
-  const char = new Image(
-    600,
-    350 + i * 50,
-    charTexture,
-    "",
-    160 * 0.95 ** (6 - i),
-    160 * 0.95 ** (6 - i)
-  );
-  if (charsrc === list[0]) {
-    char.name = "red";
-  } else if (charsrc === list[1]) {
-    char.name = "green";
-  } else if (charsrc === list[2]) {
-    char.name = "blue";
-  }
-  charList.push(char);
+  srcList.push(charsrc);
 }
-const viewList = charList.slice(0, 6);
-const restList = charList.slice(6);
-
+const viewList = srcList.slice(0, 6);
+const restList = srcList.slice(6);
 startBtn.on("click", () => {
   BoxContainer.addChild(waitContainer);
   gameContainer.addChild(charListContainer);
   outerBar.width = 400;
-  console.log("게임시작");
   onCircleIntercative(false);
   setTimeout(() => {
     waitContainer.removeChild(waitText);
@@ -300,8 +204,7 @@ startBtn.on("click", () => {
     tickers.add((deltaTime) => {
       // do something every frame
       time += deltaTime / 60;
-      console.log(Math.floor(time));
-      outerBar.width -= (deltaTime * 400) / (60 * 60);
+      outerBar.width -= (deltaTime * 400 * 20) / (60 * 60);
       seconds.text = `${60 - Math.floor(time)} 초`;
       if (outerBar.width < 0) {
         outerBar.width = 0;
@@ -326,11 +229,30 @@ startBtn.on("click", () => {
   healthBar.addChild(innerBar, outerBar, seconds);
   waitContainer.addChild(waitBox, waitText);
   waitBox.alpha = 0.6;
+
   for (let i = 0; i < 6; i++) {
-    charListContainer.addChild(viewList[i]);
+    const charTexture = new Texture.from(viewList[i]);
+    const char = new Image(
+      600,
+      350 + i * 50,
+      charTexture,
+      "",
+      160 * 0.95 ** (6 - i),
+      160 * 0.95 ** (6 - i)
+    );
+    if (viewList[i] === list[0]) {
+      char.name = "red";
+    } else if (viewList[i] === list[1]) {
+      char.name = "green";
+    } else if (viewList[i] === list[2]) {
+      char.name = "blue";
+    }
+    charList.push(char);
+    newList.push(char);
+    charListContainer.addChild(char);
   }
 });
-back.on("pointerdown", () => {
+back.on("click", () => {
   onBack();
   healthBar.removeChild(innerBar, outerBar);
   tickers.stop();
@@ -345,3 +267,79 @@ exitButton.on("click", () => {
 circleRed.on("click", () => onButtonClick("red"));
 circleBlue.on("click", () => onButtonClick("blue"));
 circleGreen.on("click", () => onButtonClick("green"));
+const onButtonClick = (color) => {
+  if (newList.at(-1).name === color) {
+    gameContainer.removeChild(charListContainer);
+    charRender();
+    score.text = `${scoreNumber} 점`;
+  } else {
+    console.log("X");
+    onCircleIntercative(false);
+    setTimeout(() => {
+      onCircleIntercative(true);
+    }, 750);
+  }
+  console.log(color, scoreNumber);
+};
+const charRender = () => {
+  gameContainer.addChild(charListContainer);
+  viewList.pop();
+  viewList.unshift(restList[0]);
+  restList.shift();
+  scoreNumber += 100;
+  for (let i = 0; i < 6; i++) {
+    const charTexture = new Texture.from(viewList[i]);
+    const char = new Image(
+      600,
+      350 + i * 50,
+      charTexture,
+      "",
+      160 * 0.95 ** (6 - i),
+      160 * 0.95 ** (6 - i)
+    );
+    if (viewList[i] === list[0]) {
+      char.name = "red";
+    } else if (viewList[i] === list[1]) {
+      char.name = "green";
+    } else if (viewList[i] === list[2]) {
+      char.name = "blue";
+    }
+    newList.pop();
+    newList.pop();
+    newList.unshift(char);
+    charListContainer.addChild(char);
+  }
+};
+
+const onBack = () => {
+  score.text = "0 점";
+  scoreNumber = 0;
+  BoxContainer.addChild(startBtn, char, navText);
+  gameContainer.removeChild(
+    back,
+    score,
+    circleRed,
+    circleBlue,
+    circleGreen,
+    healthBar
+  );
+  healthBar.removeChild(innerBar, outerBar);
+  gameContainer.removeChild(charListContainer);
+};
+const onCircleIntercative = (bool) => {
+  circleRed.interactive = bool;
+  circleBlue.interactive = bool;
+  circleGreen.interactive = bool;
+};
+BoxContainer.addChild(
+  box,
+  introBox,
+  titleText,
+  navText,
+  startBtn,
+  char,
+  gameContainer,
+  waitContainer
+);
+startBtn.addChild(startText);
+gameContainer.addChild(healthBar);
