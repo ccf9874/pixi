@@ -12,8 +12,8 @@ document.body.appendChild(app.view);
 const BoxContainer = new Container();
 app.stage.addChild(BoxContainer);
 
-const box = new Rectangle(350, 145, 500, 700, 0xfffaaa, 5);
-const introBox = new Rectangle(350, 145, 500, 65, 0x888888);
+const box = new Rectangle("id", 350, 145, 500, 700, 0xfffaaa, 5);
+const introBox = new Rectangle("id", 350, 145, 500, 65, 0x888888);
 
 const titleText = new Texts("캐릭터 짝 맞추기", app.screen.width / 2, 180, {
   fontSize: 30,
@@ -42,7 +42,17 @@ const score = new Texts("0 점", 600, 225, {
   fill: 0x000000,
   align: "center",
 });
-const startBtn = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
+const startBtn = new Rectangle(
+  "id",
+  425,
+  670,
+  350,
+  65,
+  0x888888,
+  16,
+  true,
+  true
+);
 const startText = new Texts("게임 시작", 600, 700);
 const charTexture = new Texture.from("static/char.png");
 const char = new Image(600, 450, charTexture, "char", 480, 400);
@@ -50,7 +60,7 @@ const backTexture = new Texture.from("static/back.png");
 const back = new Image(400, 180, backTexture, "back", 40, 25, true, true);
 const gameContainer = new Container();
 const waitContainer = new Container();
-const waitBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
+const waitBox = new Rectangle("id", 350, 145, 500, 700, 0x888888, 5);
 const waitText = new Texts("READY", 600, 500, {
   fill: 0xffffff,
   fontSize: 70,
@@ -72,12 +82,12 @@ const healthBar = new Container();
 healthBar.position.set(400, 240);
 healthBar.outer = outerBar;
 
-const innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10);
-const outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10);
+const innerBar = new Rectangle("id", 0, 0, 400, 30, 0xafabab, 10);
+const outerBar = new Rectangle("id", 0, 0, 400, 30, 0xd8f0d9, 10);
 
 const charListContainer = new Container();
 
-const endBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
+const endBox = new Rectangle("id", 350, 145, 500, 700, 0x888888, 5);
 endBox.alpha = 0.6;
 const endText = new Texts("게임종료!", 600, 300, {
   fill: 0xffffff,
@@ -91,7 +101,17 @@ const endScore = new Texts("", 600, 400, {
   fill: 0xffffff,
   fontSize: 80,
 });
-const exitButton = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
+const exitButton = new Rectangle(
+  "id",
+  425,
+  670,
+  350,
+  65,
+  0x888888,
+  16,
+  true,
+  true
+);
 const tickers = new PIXI.Ticker();
 let scoreNumber = 0;
 

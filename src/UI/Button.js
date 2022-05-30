@@ -1,4 +1,4 @@
-export default class ButtonHandler {
+export default class ButtonManager {
   set text(t) {
     this.buttonText.text = t;
   }

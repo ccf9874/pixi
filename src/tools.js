@@ -70,6 +70,7 @@ export class Rectangle extends Graphics {
     buttonMode = false
   ) {
     super();
+    this.id = id;
     this.interactive = interactive;
     this.buttonMode = buttonMode;
     this.beginFill(color);

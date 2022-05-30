@@ -1,6 +1,6 @@
 import Manager from "./Manage/Manager";
 import * as PIXI from "pixi.js";
-import ButtonHandler from "./UI/Button";
+import ButtonManager from "./UI/Button";
 
 export default class Button extends PIXI.Sprite {
   constructor() {
@@ -20,7 +20,7 @@ export default class Button extends PIXI.Sprite {
     const width = Manager.width;
     const height = Manager.height;
 
-    let button = new ButtonHandler({
+    let button = new ButtonManager({
       width,
       height,
       line: 0,
