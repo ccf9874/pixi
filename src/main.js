@@ -1,6 +1,7 @@
-import { Container, Application, Texture } from "pixi.js";
+import { Container, Application, Texture, Graphics } from "pixi.js";
 import * as PIXI from "pixi.js";
 import { Image, Texts, Circle, Rectangle } from "./tools";
+
 const app = new Application({
   backgroundColor: 0x6495ed,
   width: 1200,
@@ -11,258 +12,195 @@ document.body.appendChild(app.view);
 const BoxContainer = new Container();
 app.stage.addChild(BoxContainer);
 
-const box = new Rectangle(350, 145, 500, 700, 0xfffaaa, 5);
-const introBox = new Rectangle(350, 145, 500, 65, 0x888888);
+// class Textures {
+//   constructor(text, style, width, height, radius, interactive, buttonMode) {
+//     this.text = text;
+//     this.style = style;
+//     this.width = width;
+//     this.height = height;
+//     this.radius = radius;
+//     this.interactive = interactive;
+//     this.buttonMode = buttonMode;
+//   }
+//   static createTexture(text, x, y, style) {
+//     return new Texts(text, x, y, style);
+//   }
+//   static createRect(
+//     x,
+//     y,
+//     width,
+//     height,
+//     color,
+//     radius,
+//     interactive,
+//     buttonMode
+//   ) {
+//     return new Rectangle(
+//       "",
+//       x,
+//       y,
+//       width,
+//       height,
+//       color,
+//       radius,
+//       interactive,
+//       buttonMode
+//     );
+//   }
+// }
 
-const titleText = new Texts("캐릭터 짝 맞추기", app.screen.width / 2, 180, {
-  fontSize: 30,
+// class AddText extends Textures {
+//   constructor() {
+//     super();
+//   }
+//   static createBox(
+//     text,
+//     x,
+//     y,
+//     style,
+//     width,
+//     height,
+//     color,
+//     radius,
+//     interactive,
+//     buttonMode
+//   ) {
+//     BoxContainer.addChild(
+//       super.createRect(
+//         100,
+//         100,
+//         width,
+//         height,
+//         color,
+//         radius,
+//         interactive,
+//         buttonMode
+//       )
+//     );
+//     BoxContainer.addChild(super.createTexture(text, x, y, style));
+//   }
+
+//   static removeBox(text, x, y, style) {
+//     BoxContainer.removeChild(super.createTexture(text, x, y, style));
+//   }
+
+//   static onClick() {
+//     console.log("hi");
+//   }
+// }
+
+const styleEX = {
+  fontSize: 20,
   fill: 0x000000,
   align: "center",
   wordWrap: true,
   wordWrapWidth: 500,
-});
+  boxcolor: 0xafabab,
+  width: 500,
+};
 
-const navText = new Texts(
-  "(캐릭터 이름)과 같은 색 버튼을 터치해주세요!",
-  600,
-  225,
-  {
-    fontSize: 20,
-    fill: 0x000000,
-    align: "center",
-    wordWrap: true,
-    wordWrapWidth: 500,
-  }
-);
-navText.anchor.set(0.5, 0);
-navText.position.set(app.screen.width / 2, 215);
-const score = new Texts("0 점", 600, 225, {
-  fontSize: 20,
-  fill: 0x000000,
-  align: "center",
-});
-const startBtn = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
-const startText = new Texts("게임 시작", 600, 700);
-const charTexture = new Texture.from("static/char.png");
-const char = new Image(600, 450, charTexture, "char", 480, 400);
-const backTexture = new Texture.from("static/back.png");
-const back = new Image(400, 180, backTexture, "back", 40, 25, true, true);
-const gameContainer = new Container();
-const waitContainer = new Container();
-const waitBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
-const waitText = new Texts("READY", 600, 500, {
-  fill: 0xffffff,
-  fontSize: 70,
-});
-const waitText2 = new Texts("GO!", 600, 500, {
-  fill: 0xffffff,
-  fontSize: 70,
-});
-const seconds = new Texts("", 200, 15, {
-  fill: 0x000000,
-  fontSize: 25,
-});
+// const a = AddText.createBox(
+//   "ㄴ1ㄴ1ㄴ1asdㅇㅇasssdㄴ1",
+//   200,
+//   200,
+//   styleEX,
+//   200,
+//   200,
+//   styleEX.boxcolor,
+//   10,
+//   false,
+//   false
+// );
 
-const circleRed = new Circle(450, 750, 40, 0xfe0000);
-const circleBlue = new Circle(600, 750, 40, 0x0071c1);
-const circleGreen = new Circle(750, 750, 40, 0x70ad46);
+// const b = AddText.removeBox("ㄴ1ㄴ1ㄴ1asdㅇㅇasssdㄴ1", 200, 200, styleEX);
 
-const healthBar = new Container();
-healthBar.position.set(400, 240);
-healthBar.outer = outerBar;
+// class Ring extends Circle {
+//   constructor(x, y, d, color) {
+//     super(x, y, d, color);
+//     this.interactive = true;
+//     this.buttonMode = true;
+//     this.beginFill(color);
+//     this.drawCircle(x, y, d);
+//     this.endFill();
 
-const innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10);
-const outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10);
+//     new Rectangle(300, 300, 300, 300, 0x0000ff, 10);
+//   }
 
-const charListContainer = new Container();
+//   static onAdd() {
+//     BoxContainer.addChild(this);
+//   }
+// }
+// const newBox = new Ring(200, 200, 50, 0xff0000);
 
-const endBox = new Rectangle(350, 145, 500, 700, 0x888888, 5);
-endBox.alpha = 0.6;
-const endText = new Texts("게임종료!", 600, 300, {
-  fill: 0xffffff,
-  fontSize: 50,
-});
-const exitText = new Texts("확인", 600, 700, {
-  fill: 0xffffff,
-  fontSize: 30,
-});
-const endScore = new Texts("", 600, 400, {
-  fill: 0xffffff,
-  fontSize: 80,
-});
-const exitButton = new Rectangle(425, 670, 350, 65, 0x888888, 16, true, true);
-const tickers = new PIXI.Ticker();
-let scoreNumber = 0;
+// newBox.onAdd();
 
-const srcList = []; // 999
-const charList = []; // start
-const newList = []; // correct
-const list = [
-  "static/charList1.png",
-  "static/charList2.png",
-  "static/charList3.png",
-];
-for (let i = 0; i < 999; i++) {
-  const charsrc = list[Math.floor(Math.random() * 3)];
-  srcList.push(charsrc);
-}
-const viewList = srcList.slice(0, 6);
-const restList = srcList.slice(6);
+// newBox.onRemove();
 
-startBtn.on("click", () => {
-  BoxContainer.addChild(waitContainer);
-  gameContainer.addChild(charListContainer);
-  outerBar.width = 400;
-  onCircleIntercative(false);
-  setTimeout(() => {
-    waitContainer.removeChild(waitText);
-    waitContainer.addChild(waitText2);
-  }, 1000);
-  setTimeout(() => {
-    waitContainer.removeChild(waitText2);
-    BoxContainer.removeChild(waitContainer);
-    onCircleIntercative(true);
-    let time = 0;
-    tickers.autoStart = false;
-    tickers.add((deltaTime) => {
-      // do something every frame
-      time += deltaTime / 60;
-      outerBar.width -= (deltaTime * 400 * 5) / (60 * 60);
-      seconds.text = `${60 - Math.floor(time)} 초`;
-      if (outerBar.width < 0) {
-        outerBar.width = 0;
-        tickers.stop();
-        onCircleIntercative(false);
-        endScore.text = `${scoreNumber} 점`;
-        BoxContainer.addChild(endBox, endText, endScore, exitButton);
-        exitButton.addChild(exitText);
-      }
+// class Box extends Rectangle {
+//   constructor(x, y, width, height) {
+//     super();
+//     this.x = x;
+//     this.y = y;
+//     this.width = width;
+//     this.height = height;
+//   }
+
+//   _createBox(width, height) {
+//     const container = new Container();
+//     const boundary = new Graphics();
+//     boundary.lineStyle(8, 0xff0000);
+//     boundary.drawRect(0, 0, width, height);
+//     container.addChild(boundary);
+//     return container;
+//   }
+// }
+
+// const box = new Box(200, 200, 200, 200);
+
+// class ButtonObject {
+//   constructor(id, title) {
+//     this.id = id;
+//     this.title = title;
+//   }
+// }
+let buttonBasket;
+let buttonArray = [];
+let textArray = [];
+class Button {
+  constructor() {}
+
+  static create(text, x, y, width, height, color, style, isText = false) {
+    buttonBasket = new Rectangle(text, x, y, width, height, color);
+    buttonBasket.state.data = text;
+    buttonBasket.on("click", () => {
+      console.log("hihi");
     });
-    tickers.start();
-  }, 1250);
-  BoxContainer.removeChild(startBtn, char, navText);
-  gameContainer.addChild(
-    back,
-    score,
-    circleRed,
-    circleBlue,
-    circleGreen,
-    healthBar
-  );
-  healthBar.addChild(innerBar, outerBar, seconds);
-  waitContainer.addChild(waitBox, waitText);
-  waitBox.alpha = 0.6;
+    buttonArray.push(buttonBasket);
+    BoxContainer.addChild(buttonBasket);
 
-  for (let i = 0; i < 6; i++) {
-    const charTexture = new Texture.from(viewList[i]);
-    const char = new Image(
-      600,
-      350 + i * 50,
-      charTexture,
-      "",
-      160 * 0.95 ** (6 - i),
-      160 * 0.95 ** (6 - i)
-    );
-    if (viewList[i] === list[0]) {
-      char.name = "red";
-    } else if (viewList[i] === list[1]) {
-      char.name = "green";
-    } else if (viewList[i] === list[2]) {
-      char.name = "blue";
-    }
-    charList.push(char);
-    newList.push(char);
-    charListContainer.addChild(char);
-  }
-});
-back.on("click", () => {
-  onBack();
-  healthBar.removeChild(innerBar, outerBar);
-  tickers.stop();
-  outerBar.width = 400;
-});
-exitButton.on("click", () => {
-  onBack();
-  BoxContainer.removeChild(endBox, endText, endScore, exitButton);
-  exitButton.removeChild(exitText);
-  outerBar.width = 400;
-});
-circleRed.on("click", () => onButtonClick("red"));
-circleBlue.on("click", () => onButtonClick("blue"));
-circleGreen.on("click", () => onButtonClick("green"));
-const onButtonClick = (color) => {
-  if (newList.at(-1).name === color) {
-    gameContainer.removeChild(charListContainer);
-    charRender();
-    score.text = `${scoreNumber} 점`;
-  } else {
-    console.log("X");
-    onCircleIntercative(false);
-    setTimeout(() => {
-      onCircleIntercative(true);
-    }, 750);
-  }
-  console.log(color, scoreNumber);
-};
-const charRender = () => {
-  gameContainer.addChild(charListContainer);
-  viewList.pop();
-  viewList.unshift(restList[0]);
-  restList.shift();
-  scoreNumber += 100;
-  for (let i = 0; i < 6; i++) {
-    const charTexture = new Texture.from(viewList[i]);
-    const char = new Image(
-      600,
-      350 + i * 50,
-      charTexture,
-      "",
-      160 * 0.95 ** (6 - i),
-      160 * 0.95 ** (6 - i)
-    );
-    if (viewList[i] === list[0]) {
-      char.name = "red";
-    } else if (viewList[i] === list[1]) {
-      char.name = "green";
-    } else if (viewList[i] === list[2]) {
-      char.name = "blue";
-    }
-    newList.pop();
-    newList.pop();
-    newList.unshift(char);
-    charListContainer.addChild(char);
-  }
-};
+    if (isText) {
+      buttonBasket = new Texts(text, x, y, style);
 
-const onBack = () => {
-  score.text = "0 점";
-  scoreNumber = 0;
-  BoxContainer.addChild(startBtn, char, navText);
-  gameContainer.removeChild(
-    back,
-    score,
-    circleRed,
-    circleBlue,
-    circleGreen,
-    healthBar
-  );
-  healthBar.removeChild(innerBar, outerBar);
-  gameContainer.removeChild(charListContainer);
-};
-const onCircleIntercative = (bool) => {
-  circleRed.interactive = bool;
-  circleBlue.interactive = bool;
-  circleGreen.interactive = bool;
-};
-BoxContainer.addChild(
-  box,
-  introBox,
-  titleText,
-  navText,
-  startBtn,
-  char,
-  gameContainer,
-  waitContainer
-);
-startBtn.addChild(startText);
-gameContainer.addChild(healthBar);
+      buttonBasket.x = x + width / 2;
+      buttonBasket.y = y + height / 2;
+      textArray.push(buttonBasket);
+      BoxContainer.addChild(buttonBasket);
+    }
+  }
+  static remove(text) {
+    BoxContainer.removeChild(
+      buttonArray.filter((e) => e.state.data === text)[0]
+    );
+    BoxContainer.removeChild(textArray.filter((e) => e._text === text)[0]);
+  }
+  onClick() {
+    console.log("clicked");
+  }
+}
+
+Button.create("123", 500, 300, 300, 300, 0x00f0ff, styleEX, true);
+Button.create("124", 50, 30, 30, 30, 0x00f0ff, styleEX, true);
+Button.create("1255", 450, 100, 100, 30, 0x00f0ff, styleEX, true);
+Button.create("게임시작", 238, 300, 100, 30, 0x00f0ff, styleEX);
+
+setTimeout(() => Button.remove("1255"), 1000);
