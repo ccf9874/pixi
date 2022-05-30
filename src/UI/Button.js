@@ -1,32 +1,60 @@
-export default class ButtonManager {
-  set text(t) {
-    this.buttonText.text = t;
+import Manager from "../Manage/Manager";
+import {
+  Container,
+  Graphics,
+  Sprite,
+  Application,
+  Text,
+  TextStyle,
+  Texture,
+  Ticker,
+} from "pixi.js";
+import ButtonManager from "./ButtonManager";
+
+export default class Button extends Sprite {
+  constructor() {
+    const width = Manager.width;
+    const height = Manager.height;
+    let graphic = new PIXI.Graphics();
+    graphic.lineStyle(1, 0x000000, 1);
+    graphic.beginFill(0x6495ed);
+    graphic.drawRect(0, 0, width, height);
+    graphic.endFill();
+    graphic.clear();
+    this.anchor.set(0.5);
+    this.alpha = 0.8;
   }
-  get text() {
-    return this.buttonText;
-  }
-  pos(x, y) {
-    this.button.x = x;
-    this.button.y = y;
-  }
-  onClick(func) {
-    this.button.on("click", func);
-  }
-  addText(obj) {
-    this[obj.name] = new PIXI.Text(obj.text, obj.style);
-    this.button.addChild(this[obj.name]);
-  }
-  constructor(option) {
-    this.graphics = new PIXI.Graphics();
-    this.graphics.lineStyle(3, 0x000000, 1);
-    this.graphic.beginFill(option.fillColor);
-    this.graphic.drawRoundedRect(
-      0,
-      0,
-      option.width,
-      option.height,
-      option.rounded ? option.rounded : 0
-    );
-    this.graphic.endFill();
+
+  static makeBtn(text, name, width, height) {
+    let button = new ButtonManager({
+      width,
+      height,
+      line: 0,
+      rounded: 5,
+    });
+    button.addText({
+      text,
+      style: {
+        fontSize: 20,
+        fill: 0x000000,
+        align: "center",
+        wordWrap: true,
+        wordWrapWidth: 500,
+        // boxcolor: 0xafabab,
+        // width: 500,
+      },
+      name,
+    });
+    return button;
   }
 }
+
+/*
+    만들려는 class 안에서
+    this.audioBtn = this.makeBtn({
+      url: "audio_icon",
+      width: size,
+      height: size,
+    },"넣을 텍스트" , "")
+    형식으로 사용
+*/
