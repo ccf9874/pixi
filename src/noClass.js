@@ -1,6 +1,6 @@
 import { Container, Application, Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
-import { Image, Texts, Circle, Rectangle } from "./tools";
+import { Image, Texts, Circle, Rectangle } from "./Component/tool/tools";
 const app = new Application({
   backgroundColor: 0x6495ed,
   width: 1200,

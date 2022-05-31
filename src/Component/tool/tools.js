@@ -1,13 +1,4 @@
-import {
-  Container,
-  Graphics,
-  Sprite,
-  Application,
-  Text,
-  TextStyle,
-  Texture,
-  Ticker,
-} from "pixi.js";
+import { Graphics, Sprite, Text } from "pixi.js";
 export class Image extends Sprite {
   constructor(
     x = 0,

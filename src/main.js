@@ -1,7 +1,7 @@
 import { Container, Application, Texture, Graphics } from "pixi.js";
 import * as PIXI from "pixi.js";
-import { Image, Texts, Circle, Rectangle } from "./tools";
-import Button from "./UI/Button.js";
+import { Image, Texts, Circle, Rectangle } from "./Component/tool/tools";
+import Button from "./Component/Button";
 
 const app = new Application({
   backgroundColor: 0x6495ed,
@@ -23,5 +23,8 @@ const styleEX = {
   boxcolor: 0xafabab,
   width: 500,
 };
-
-Button.makeBtn("ddd", "ddd");
+export default class Main {
+  constructor(text, width, height, rounded, fillColor) {
+    this.button = new Button();
+  }
+}

@@ -1,36 +1,26 @@
-import Manager from "../Manage/Manager";
-import {
-  Container,
-  Graphics,
-  Sprite,
-  Application,
-  Text,
-  TextStyle,
-  Texture,
-  Ticker,
-} from "pixi.js";
+// import Manager from "../Manage/Manager";
+import { Sprite } from "pixi.js";
 import ButtonManager from "./ButtonManager";
 
 export default class Button extends Sprite {
   constructor() {
-    const width = Manager.width;
-    const height = Manager.height;
     let graphic = new PIXI.Graphics();
     graphic.lineStyle(1, 0x000000, 1);
-    graphic.beginFill(0x6495ed);
-    graphic.drawRect(0, 0, width, height);
+    graphic.beginFill(0x0000ff);
+    graphic.drawRect(0, 0, 200, 200);
     graphic.endFill();
     graphic.clear();
     this.anchor.set(0.5);
     this.alpha = 0.8;
   }
 
-  static makeBtn(text, name, width, height) {
+  static makeBtn(text, name, width, height, fillColor) {
     let button = new ButtonManager({
+      text: "option.text",
       width,
       height,
-      line: 0,
       rounded: 5,
+      fillColor,
     });
     button.addText({
       text,
@@ -45,6 +35,7 @@ export default class Button extends Sprite {
       },
       name,
     });
+    button.onClick(() => console.log("onClick"));
     return button;
   }
 }
