@@ -41,13 +41,14 @@ export class Texts extends Text {
   }
 }
 export class Circle extends Graphics {
-  constructor(x, y, d, color) {
+  constructor(option, func) {
     super();
     this.interactive = true;
     this.buttonMode = true;
-    this.beginFill(color);
+    this.beginFill(option.color);
     this.lineStyle(3, 0x000000, 1);
-    this.drawCircle(x, y, d);
+    this.drawCircle(option.x, option.y, option.d);
+    this.on("click", func);
   }
 }
 export class Rectangle extends Graphics {
