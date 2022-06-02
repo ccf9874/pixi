@@ -94,27 +94,33 @@ export default class App {
       },
       () => console.log("finished")
     );
+    const WaitText = new Texts({
+      text: "Ready",
+      width: 0,
+      height: 0,
+      x: 600,
+      y: 450,
+    });
+    const WaitText2 = new Texts({
+      text: "Go!",
+      width: 0,
+      height: 0,
+      x: 600,
+      y: 450,
+    });
 
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
-      this.con.addChild(back, readyBox);
-      let readyOption = {
-        text: "Ready",
-        width: 0,
-        height: 0,
-        x: 600,
-        y: 450,
-      };
-      let text = this.setText(readyOption);
+      this.con.addChild(back, readyBox, WaitText);
 
       setTimeout(() => {
-        this.con.removeChild(this.setText(readyOption));
-        readyOption.text = "GO!";
-        this.con.addChild(text);
-        console.log(readyOption.text);
+        this.con.removeChild(WaitText);
+        this.con.addChild(WaitText2);
       }, 1000);
 
-      this.con.addChild(back, readyBox, text);
+      setTimeout(() => {
+        this.con.removeChild(WaitText2, readyBox);
+      }, 1250);
     };
     const ToBack = () => {
       this.con.addChild(nav, char, startBtn);
