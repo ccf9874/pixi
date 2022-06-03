@@ -43,6 +43,7 @@ export class Texts extends Text {
 export class Circle extends Graphics {
   constructor(option, func) {
     super();
+    this.name = option.name;
     this.interactive = true;
     this.buttonMode = true;
     this.beginFill(option.color);

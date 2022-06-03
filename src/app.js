@@ -109,30 +109,12 @@ export default class App {
       x: 600,
       y: 450,
     });
-    const red = this.makeCircle(
-      { x: 400, y: 700, d: 50, color: 0xff0000 },
-      (e) => this.onClick(e)
-    );
-    const green = this.makeCircle(
-      { x: 600, y: 700, d: 50, color: 0x0000ff },
-      () => console.log("blue")
-    );
-    const blue = this.makeCircle(
-      { x: 800, y: 700, d: 50, color: 0x00ff00 },
-      () => console.log("green")
-    );
+
     const gameView = new GameView();
+
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
-      this.con.addChild(
-        back,
-        red,
-        green,
-        blue,
-        gameView.con,
-        readyBox,
-        WaitText
-      );
+      this.con.addChild(back, gameView.con, readyBox, WaitText);
 
       setTimeout(() => {
         this.con.removeChild(WaitText);
@@ -147,7 +129,7 @@ export default class App {
 
     const ToBack = () => {
       this.con.addChild(nav, char, startBtn);
-      this.con.removeChild(readyBox, back, red, green, blue, gameView.con);
+      this.con.removeChild(readyBox, back, gameView.con);
     };
 
     this.con.addChild(BoxContainer, header, nav, char, startBtn);
@@ -169,13 +151,5 @@ export default class App {
     const imgBox = new Container();
     const img = new Picture(option, func);
     return imgBox.addChild(img);
-  }
-  makeCircle(option, func) {
-    const circle = new Circle(option, func);
-    return circle;
-  }
-  onClick(e) {
-    e.target.interactive = false;
-    setTimeout((e) => (e.target.interactive = true), 750);
   }
 }
