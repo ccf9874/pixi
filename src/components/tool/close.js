@@ -1,6 +1,4 @@
-import * as PIXI from "pixi.js";
 import { Container } from "pixi.js";
-import Box from "./Box";
 import { Rectangle, Texts } from "./tool";
 export default class Close {
   constructor() {

@@ -4,9 +4,7 @@ import Close from "./close";
 import { Rectangle, Texts } from "./tool";
 
 export default class ProgressBar {
-  constructor(gameScore) {
-    console.log(888, gameScore);
-    this.gameScore = gameScore;
+  constructor(redBtn, blueBtn, greenBtn) {
     this.con = new Container();
     this.timeBar = new Container();
     this.timeBar.position.set(400, 190);
@@ -24,7 +22,9 @@ export default class ProgressBar {
         fontSize: 18,
       },
     });
-
+    this.redBtn = redBtn;
+    this.blueBtn = blueBtn;
+    this.greenBtn = greenBtn;
     this.close = new Close();
 
     let time = 0;
@@ -46,8 +46,11 @@ export default class ProgressBar {
       this.seconds.text = `${60 - Math.floor(this.time)} 초`;
       if (this.outerBar.width < 0) {
         this.tickers.stop();
-        this.close.endScore.text = `${this.gameScore} 점`;
         this.con.addChild(this.close.con);
+        this.redBtn.interactive =
+          this.blueBtn.interactive =
+          this.greenBtn.interactive =
+            false;
       }
       this.tickers.update(this.time);
     });

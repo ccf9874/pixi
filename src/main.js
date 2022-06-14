@@ -1,7 +1,7 @@
-import { Container, Graphics, Application, TextStyle, Texture } from "pixi.js";
+import { Application } from "pixi.js";
 
-import * as PIXI from "pixi.js";
 import App from "./app";
+
 const app = new Application({
   backgroundColor: 0x6495ed,
   width: 1200,

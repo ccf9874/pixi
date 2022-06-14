@@ -1,12 +1,10 @@
-import { Container, TextStyle } from "pixi.js";
+import { Container } from "pixi.js";
 import * as style from "./style";
 import Box from "./components/tool/Box";
 import Button from "./components/tool/Button";
 import Picture from "./components/tool/picture";
-import { Circle, Rectangle, Texts } from "./components/tool/tool.js";
+import { Texts } from "./components/tool/tool.js";
 import GameView from "./components/GameView";
-import ProgressBar from "./components/tool/ProgressBar";
-import Close from "./components/tool/close";
 
 export default class App {
   constructor() {
@@ -28,7 +26,7 @@ export default class App {
       height: 80,
       color: 0xd0a040,
       line: 1,
-      text: "카드 짝 맞추기 게임",
+      text: "캐릭터 짝 맞추기 게임",
     });
     const nav = this.makeBox({
       x: 301,
@@ -85,19 +83,6 @@ export default class App {
       },
       () => StartGame()
     );
-    const endBtn = this.makeBtn(
-      {
-        x: 500,
-        y: 750,
-        width: 200,
-        height: 50,
-        color: 0xaaaaaa,
-        line: true,
-        text: "게임 종료",
-        style: style.normalText,
-      },
-      () => console.log("finished")
-    );
     const WaitText = new Texts({
       text: "Ready",
       width: 0,
@@ -114,17 +99,10 @@ export default class App {
     });
 
     const gameView = new GameView();
-    const progressBar = new ProgressBar(gameView.score.text);
 
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
-      this.con.addChild(
-        back,
-        gameView.con,
-        progressBar.con,
-        readyBox,
-        WaitText
-      );
+      this.con.addChild(back, gameView.con, readyBox, WaitText);
 
       setTimeout(() => {
         this.con.removeChild(WaitText);
@@ -133,33 +111,29 @@ export default class App {
 
       setTimeout(() => {
         this.con.removeChild(WaitText2, readyBox);
-        progressBar.TickerStart();
-        gameView.red.interactive =
-          gameView.blue.interactive =
-          gameView.green.interactive =
-            true;
+        gameView.progressBar.TickerStart();
+        gameView.onInteractive(true);
       }, 1250);
       gameView.charRender();
     };
 
     const ToBack = () => {
+      gameView.progressBar.time = 0;
+      gameView.progressBar.seconds.text = "60 초";
+      gameView.progressBar.outerBar.width = 400;
+      gameView.scoreNumber = 0;
+      gameView.score.text = "0 점";
+      gameView.progressBar.close.endScore.text = "0 점";
+      gameView.progressBar.tickers.stop();
+      this.con.removeChild(readyBox, back, gameView.con);
       this.con.addChild(nav, char, startBtn);
-      this.con.removeChild(readyBox, back, gameView.con, progressBar.con);
     };
+
     this.con.addChild(BoxContainer, header, nav, char, startBtn);
 
-    progressBar.close.exitButton.on("click", () => {
-      this.con.removeChild(
-        this.con.children[3],
-        this.con.children[4],
-        this.con.children[5]
-      );
-      this.con.addChild(nav, char, startBtn);
-      progressBar.time = 0;
-      progressBar.seconds.text = "60 초";
-      progressBar.outerBar.width = 400;
-    });
+    gameView.progressBar.close.exitButton.on("click", () => ToBack());
   }
+
   makeBox(option) {
     const bgBox = new Box(option);
     const boxText = new Texts(option);
