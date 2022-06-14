@@ -6,6 +6,8 @@ import Picture from "./components/tool/picture";
 import { Texts } from "./components/tool/tool.js";
 import GameView from "./components/GameView";
 
+import UIUtil from "./components/UIUtil";
+
 export default class App {
   constructor() {
     this.con = new Container();
@@ -70,7 +72,7 @@ export default class App {
       },
       () => ToBack()
     );
-    const startBtn = this.makeBtn(
+    const startBtn = UIUtil.makeBtn(
       {
         x: 500,
         y: 750,
@@ -98,7 +100,7 @@ export default class App {
       y: 450,
     });
 
-    const gameView = new GameView();
+    this.gameView = new GameView();
 
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
@@ -133,6 +135,18 @@ export default class App {
     this.con.addChild(BoxContainer, header, nav, char, startBtn);
 
     gameView.progressBar.close.exitButton.on("click", () => ToBack());
+  }
+
+  _ToBack() {
+    this.gameView.progressBar.time = 0;
+    this.gameView.progressBar.seconds.text = "60 초";
+    this.gameView.progressBar.outerBar.width = 400;
+    this.gameView.scoreNumber = 0;
+    this.gameView.score.text = "0 점";
+    this.gameView.progressBar.close.endScore.text = "0 점";
+    this.gameView.progressBar.tickers.stop();
+    this.con.removeChild(readyBox, back, gameView.con);
+    this.con.addChild(nav, char, startBtn);
   }
 
   makeBox(option) {
