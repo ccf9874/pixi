@@ -1,5 +1,4 @@
-import { Container, Graphics } from "pixi.js";
-import * as PIXI from "pixi.js";
+import { Graphics } from "pixi.js";
 
 export default class Box extends Graphics {
   constructor(option) {

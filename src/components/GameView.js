@@ -1,7 +1,7 @@
 import { Container, Texture } from "pixi.js";
 
 import { Circle, Texts, Image } from "./tool/tool";
-import ProgressBar from "./tool/ProgressBar";
+import ProgressBar from "./ProgressBar";
 import Picture from "./tool/picture";
 
 export default class GameView {
@@ -40,21 +40,21 @@ export default class GameView {
       buttonMode: false,
     });
     this.red = this.makeCircle(
-      { x: 400, y: 700, d: 50, color: 0xff0000, name: "red" },
+      { x: 400, y: 700, d: 50, color: 0xff0000 },
       () => {
-        onButtonClick("red");
+        onButtonClick("charList1");
       }
     );
     this.blue = this.makeCircle(
-      { x: 600, y: 700, d: 50, color: 0x0071c1, name: "blue" },
+      { x: 600, y: 700, d: 50, color: 0x0071c1 },
       () => {
-        onButtonClick("blue");
+        onButtonClick("charList3");
       }
     );
     this.green = this.makeCircle(
-      { x: 800, y: 700, d: 50, color: 0x70ad46, name: "green" },
+      { x: 800, y: 700, d: 50, color: 0x70ad46 },
       () => {
-        onButtonClick("green");
+        onButtonClick("charList2");
       }
     );
     this.score = new Texts({
@@ -74,7 +74,6 @@ export default class GameView {
     this.scoreNumber = 0;
     this.srcList = []; // 999
     this.charList = []; // start 시작할때 보여줄 리스트
-    this.newList = []; // correct
 
     this.list = [
       "static/charList1.png",
@@ -88,13 +87,12 @@ export default class GameView {
     } ///무작위 1000개
 
     this.viewList = this.srcList.slice(0, 6);
-    //보여줄 6개
+    //보여줄 6개 url List
     this.restList = this.srcList.slice(6);
-    //나머지
+    //나머지 url List
 
-    const onButtonClick = (color) => {
-      if (this.newList.at(-1).name === color) {
-        this.gameContainer.removeChild(this.charListContainer);
+    const onButtonClick = (name) => {
+      if (this.viewList.at(-1).slice(7, 16) === name) {
         charRender();
         this.score.text =
           this.progressBar.close.endScore.text = `${this.scoreNumber} 점`;
@@ -102,15 +100,15 @@ export default class GameView {
         console.log("X");
         this.wrongClick();
       }
-      console.log(color, this.scoreNumber);
+      console.log(name, this.scoreNumber);
     };
 
     const charRender = () => {
-      this.gameContainer.addChild(this.charListContainer);
       this.viewList.pop();
       this.viewList.unshift(this.restList[0]);
       this.restList.shift();
       this.scoreNumber += 100;
+
       for (let i = 0; i < 6; i++) {
         const charTexture = new Texture.from(this.viewList[i]);
         const char = new Image(
@@ -121,20 +119,8 @@ export default class GameView {
           160 * 0.95 ** (6 - i),
           160 * 0.95 ** (6 - i)
         );
-        if (this.viewList[i] === this.list[0]) {
-          char.name = "red";
-        } else if (this.viewList[i] === this.list[1]) {
-          char.name = "green";
-        } else if (this.viewList[i] === this.list[2]) {
-          char.name = "blue";
-        }
-        this.newList.pop();
-        this.newList.pop();
-        this.newList.unshift(char);
-
         this.charListContainer.addChild(char);
       }
-      console.log(137, this.newList[0].name);
     };
     this.con.addChild(
       this.red,
@@ -156,19 +142,10 @@ export default class GameView {
         160 * 0.95 ** (6 - i),
         160 * 0.95 ** (6 - i)
       );
-      if (this.viewList[i] === this.list[0]) {
-        char.name = "red";
-      } else if (this.viewList[i] === this.list[1]) {
-        char.name = "green";
-      } else if (this.viewList[i] === this.list[2]) {
-        char.name = "blue";
-      }
       this.charList.push(char);
-      this.newList.push(char);
       this.charListContainer.addChild(char);
     }
     this.gameContainer.addChild(this.charListContainer);
-    console.log(171, this.newList);
   }
   makeCircle(option, func) {
     const circle = new Circle(option, func);

@@ -1,6 +1,4 @@
-import { Container, TextStyle, Sprite, Texture } from "pixi.js";
-import Box from "./Box";
-import { Circle, Rectangle, Texts } from "./tool";
+import { Sprite, Texture } from "pixi.js";
 
 export default class Picture extends Sprite {
   constructor(option, func) {

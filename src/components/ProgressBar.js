@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Container } from "pixi.js";
-import Close from "./close";
-import { Rectangle, Texts } from "./tool";
+import Close from "./tool/close";
+import { Rectangle, Texts } from "./tool/tool";
 
 export default class ProgressBar {
   constructor(redBtn, blueBtn, greenBtn) {

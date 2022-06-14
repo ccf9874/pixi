@@ -103,6 +103,7 @@ export default class App {
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
       this.con.addChild(back, gameView.con, readyBox, WaitText);
+      gameView.onInteractive(false);
 
       setTimeout(() => {
         this.con.removeChild(WaitText);
