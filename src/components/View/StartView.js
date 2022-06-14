@@ -5,6 +5,5 @@ import UIUtil from "../UIUtil";
 export default class StartView extends BaseView {
   constructor() {
     super();
-    this.con = new Container();
   }
 }

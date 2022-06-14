@@ -3,10 +3,10 @@ import UIUtil from "../UIUtil";
 
 export default class BaseView {
   constructor() {
+    this.hi = "hi";
     this.con = new Container();
-
-    const BoxContainer = UIUtil.makeBtn({
-      x: 300,
+    this.BoxContainer = UIUtil.makeBtn({
+      x: 500,
       y: 50,
       width: 600,
       height: 800,
@@ -14,7 +14,7 @@ export default class BaseView {
       line: true,
       text: "",
     });
-    this.con.addChild(BoxContainer);
+    this.con.addChild(this.BoxContainer);
 
     setParent = () => {};
     setRelease = () => {};
