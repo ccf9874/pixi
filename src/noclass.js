@@ -211,6 +211,7 @@ exitButton.on("click", () => {
 circleRed.on("click", () => onButtonClick("red"));
 circleBlue.on("click", () => onButtonClick("blue"));
 circleGreen.on("click", () => onButtonClick("green"));
+
 const onButtonClick = (color) => {
   if (newList.at(-1).name === color) {
     gameContainer.removeChild(charListContainer);

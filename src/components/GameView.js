@@ -1,76 +1,168 @@
 import { Container, Graphics, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
-import { Circle, Rectangle } from "./tool/tool";
+import { Circle, Rectangle, Texts, Image } from "./tool/tool";
+import Close from "./tool/close";
+
+// 버튼 , charList , close
 
 export default class GameView {
   constructor() {
     this.con = new Container();
-    const timeBar = new Container();
-    timeBar.position.set(400, 190);
-    timeBar.outer = outerBar;
+    this.gameContainer = new Container();
+    this.charListContainer = new Container();
 
-    const innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10);
-    const outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10);
-
-    const red = this.makeCircle(
+    this.red = this.makeCircle(
       { x: 400, y: 700, d: 50, color: 0xff0000, name: "red" },
-      (e) => {
-        this.onButtonClick(e);
-        onInteactive(false);
+      () => {
+        onButtonClick("red");
       }
     );
-    const blue = this.makeCircle(
+    this.blue = this.makeCircle(
       { x: 600, y: 700, d: 50, color: 0x0000ff, name: "blue" },
-      (e) => {
-        this.onButtonClick(e);
-        onInteactive(false);
+      () => {
+        onButtonClick("blue");
       }
     );
-    const green = this.makeCircle(
+    this.green = this.makeCircle(
       { x: 800, y: 700, d: 50, color: 0x00ff00, name: "green" },
-      (e) => {
-        this.onButtonClick(e);
-        onInteactive(false);
+      () => {
+        onButtonClick("green");
       }
     );
+    this.score = new Texts({
+      text: "",
+      x: 500,
+      y: 130,
+      width: 200,
+      height: 50,
+      style: {
+        fill: 0xffffff,
+        fontSize: 20,
+      },
+    });
 
-    timeBar.addChild(innerBar, outerBar);
-    this.con.addChild(timeBar, red, green, blue);
+    this.close = new Close();
 
-    const onInteactive = (bool) => {
-      red.interactive = bool;
-      blue.interactive = bool;
-      green.interactive = bool;
-    };
+    this.scoreNumber = 0;
+    this.srcList = []; // 999
+    this.charList = []; // start
+    this.newList = []; // correct
 
-    const tickers = new PIXI.Ticker();
-    let scoreNumber = 0;
-
-    const srcList = []; // 999
-    const charList = []; // start
-    const newList = []; // correct
-    const list = [
+    this.list = [
       "static/charList1.png",
       "static/charList2.png",
       "static/charList3.png",
     ];
+
     for (let i = 0; i < 999; i++) {
-      const charsrc = list[Math.floor(Math.random() * 3)];
-      srcList.push(charsrc);
+      const charsrc = this.list[Math.floor(Math.random() * 3)];
+      this.srcList.push(charsrc);
     }
-    const viewList = srcList.slice(0, 6);
-    const restList = srcList.slice(6);
+
+    this.viewList = this.srcList.slice(0, 6);
+    this.restList = this.srcList.slice(6);
+
+    const onButtonClick = (color) => {
+      if (this.newList.at(-1).name === color) {
+        this.gameContainer.removeChild(this.charListContainer);
+        charRender();
+        this.score.text = `${this.scoreNumber} 점`;
+      } else {
+        console.log("X");
+        this.wrongClick();
+      }
+      console.log(color, this.scoreNumber);
+    };
+
+    const charRender = () => {
+      this.gameContainer.addChild(this.charListContainer);
+      this.viewList.pop();
+      this.viewList.unshift(this.restList[0]);
+      this.restList.shift();
+      this.scoreNumber += 100;
+      for (let i = 0; i < 6; i++) {
+        const charTexture = new Texture.from(this.viewList[i]);
+        const char = new Image(
+          600,
+          300 + i * 50,
+          charTexture,
+          "",
+          160 * 0.95 ** (6 - i),
+          160 * 0.95 ** (6 - i)
+        );
+        if (this.viewList[i] === this.list[0]) {
+          char.name = "red";
+        } else if (this.viewList[i] === this.list[1]) {
+          char.name = "green";
+        } else if (this.viewList[i] === this.list[2]) {
+          char.name = "blue";
+        }
+        this.newList.pop();
+        this.newList.pop();
+        this.newList.unshift(char);
+        this.charListContainer.addChild(char);
+      }
+    };
+    this.con.addChild(
+      this.red,
+      this.green,
+      this.blue,
+      this.score,
+      this.gameContainer
+    );
   }
+
   makeCircle(option, func) {
     const circle = new Circle(option, func);
+    circle.interactive = false;
     return circle;
   }
-  TickerStart() {
-    console.log("ticker Start");
+
+  onInteractive(bool) {
+    this.red.interactive =
+      this.blue.interactive =
+      this.green.interactive =
+        bool;
   }
-  charRender() {}
+
+  wrongClick() {
+    this.onInteractive(false);
+    setTimeout(() => {
+      this.onInteractive(true);
+    }, 750);
+  }
+
+  charRender() {
+    for (let i = 0; i < 6; i++) {
+      const charTexture = new Texture.from(this.viewList[i]);
+      const char = new Image(
+        600,
+        300 + i * 50,
+        charTexture,
+        "",
+        160 * 0.95 ** (6 - i),
+        160 * 0.95 ** (6 - i)
+      );
+      if (this.viewList[i] === this.list[0]) {
+        char.name = "red";
+      } else if (this.viewList[i] === this.list[1]) {
+        char.name = "green";
+      } else if (this.viewList[i] === this.list[2]) {
+        char.name = "blue";
+      }
+      this.charList.push(char);
+      this.newList.push(char);
+      this.charListContainer.addChild(char);
+    }
+    this.gameContainer.addChild(this.charListContainer);
+  }
+
   onEnd() {}
+
   onButtonClick(e) {
     console.log(e.target.name);
+  }
+  shuffle(arr) {
+    arr.sort(() => Math.random() - 0.5);
   }
 }

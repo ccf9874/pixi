@@ -5,6 +5,8 @@ import Button from "./components/tool/Button";
 import Picture from "./components/tool/picture";
 import { Circle, Rectangle, Texts } from "./components/tool/tool.js";
 import GameView from "./components/GameView";
+import ProgressBar from "./components/tool/ProgressBar";
+import Close from "./components/tool/close";
 
 export default class App {
   constructor() {
@@ -18,13 +20,14 @@ export default class App {
       line: true,
       text: "",
     });
+
     const header = this.makeBox({
       x: 300,
       y: 50,
       width: 600,
       height: 80,
       color: 0xd0a040,
-      line: true,
+      line: 1,
       text: "카드 짝 맞추기 게임",
     });
     const nav = this.makeBox({
@@ -111,10 +114,17 @@ export default class App {
     });
 
     const gameView = new GameView();
+    const progressBar = new ProgressBar(gameView.score.text);
 
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
-      this.con.addChild(back, gameView.con, readyBox, WaitText);
+      this.con.addChild(
+        back,
+        gameView.con,
+        progressBar.con,
+        readyBox,
+        WaitText
+      );
 
       setTimeout(() => {
         this.con.removeChild(WaitText);
@@ -123,25 +133,41 @@ export default class App {
 
       setTimeout(() => {
         this.con.removeChild(WaitText2, readyBox);
-        gameView.TickerStart();
+        progressBar.TickerStart();
+        gameView.red.interactive =
+          gameView.blue.interactive =
+          gameView.green.interactive =
+            true;
       }, 1250);
+      gameView.charRender();
     };
 
     const ToBack = () => {
       this.con.addChild(nav, char, startBtn);
-      this.con.removeChild(readyBox, back, gameView.con);
+      this.con.removeChild(readyBox, back, gameView.con, progressBar.con);
     };
-
     this.con.addChild(BoxContainer, header, nav, char, startBtn);
+
+    progressBar.close.exitButton.on("click", () => {
+      this.con.removeChild(
+        this.con.children[3],
+        this.con.children[4],
+        this.con.children[5]
+      );
+      this.con.addChild(nav, char, startBtn);
+      progressBar.time = 0;
+      progressBar.seconds.text = "60 초";
+      progressBar.outerBar.width = 400;
+    });
   }
   makeBox(option) {
     const bgBox = new Box(option);
     const boxText = new Texts(option);
     bgBox.addChild(boxText);
     option.alpah ? (bgBox.alpha = option.alpah) : null;
-
     return bgBox;
   }
+
   makeBtn(option, func) {
     const Btn = new Button(option, func);
     return Btn;
