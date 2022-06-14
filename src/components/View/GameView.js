@@ -1,8 +1,7 @@
 import { Container, Texture } from "pixi.js";
 
-import { Circle, Texts, Image } from "./tool/tool";
-import ProgressBar from "./ProgressBar";
-import Picture from "./tool/picture";
+import { Circle, Texts, Image, Picture } from "../tool/tool";
+import ProgressBar from "../ProgressBar";
 
 export default class GameView {
   constructor() {
@@ -39,24 +38,15 @@ export default class GameView {
       interactive: false,
       buttonMode: false,
     });
-    this.red = this.makeCircle(
-      { x: 400, y: 700, d: 50, color: 0xff0000 },
-      () => {
-        onButtonClick("charList1");
-      }
-    );
-    this.blue = this.makeCircle(
-      { x: 600, y: 700, d: 50, color: 0x0071c1 },
-      () => {
-        onButtonClick("charList3");
-      }
-    );
-    this.green = this.makeCircle(
-      { x: 800, y: 700, d: 50, color: 0x70ad46 },
-      () => {
-        onButtonClick("charList2");
-      }
-    );
+    this.red = this.makeCircle({ x: 400, y: 700, d: 50, color: 0xff0000 }, () => {
+      onButtonClick("charList1");
+    });
+    this.blue = this.makeCircle({ x: 600, y: 700, d: 50, color: 0x0071c1 }, () => {
+      onButtonClick("charList3");
+    });
+    this.green = this.makeCircle({ x: 800, y: 700, d: 50, color: 0x70ad46 }, () => {
+      onButtonClick("charList2");
+    });
     this.score = new Texts({
       text: "0 점",
       x: 500,
@@ -75,11 +65,7 @@ export default class GameView {
     this.srcList = []; // 999
     this.charList = []; // start 시작할때 보여줄 리스트
 
-    this.list = [
-      "static/charList1.png",
-      "static/charList2.png",
-      "static/charList3.png",
-    ];
+    this.list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
 
     for (let i = 0; i < 1000; i++) {
       const charsrc = this.list[Math.floor(Math.random() * 3)];
@@ -94,8 +80,7 @@ export default class GameView {
     const onButtonClick = (name) => {
       if (this.viewList.at(-1).slice(7, 16) === name) {
         charRender();
-        this.score.text =
-          this.progressBar.close.endScore.text = `${this.scoreNumber} 점`;
+        this.score.text = this.progressBar.close.endScore.text = `${this.scoreNumber} 점`;
       } else {
         console.log("X");
         this.wrongClick();
@@ -111,37 +96,16 @@ export default class GameView {
 
       for (let i = 0; i < 6; i++) {
         const charTexture = new Texture.from(this.viewList[i]);
-        const char = new Image(
-          600,
-          300 + i * 50,
-          charTexture,
-          "",
-          160 * 0.95 ** (6 - i),
-          160 * 0.95 ** (6 - i)
-        );
+        const char = new Image(600, 300 + i * 50, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
         this.charListContainer.addChild(char);
       }
     };
-    this.con.addChild(
-      this.red,
-      this.green,
-      this.blue,
-      this.score,
-      this.gameContainer,
-      this.progressBar.con
-    );
+    this.con.addChild(this.red, this.green, this.blue, this.score, this.gameContainer, this.progressBar.con);
   }
   charRender() {
     for (let i = 0; i < 6; i++) {
       const charTexture = new Texture.from(this.viewList[i]);
-      const char = new Image(
-        600,
-        300 + i * 50,
-        charTexture,
-        "",
-        160 * 0.95 ** (6 - i),
-        160 * 0.95 ** (6 - i)
-      );
+      const char = new Image(600, 300 + i * 50, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
       this.charList.push(char);
       this.charListContainer.addChild(char);
     }
@@ -154,10 +118,7 @@ export default class GameView {
   }
 
   onInteractive(bool) {
-    this.red.interactive =
-      this.blue.interactive =
-      this.green.interactive =
-        bool;
+    this.red.interactive = this.blue.interactive = this.green.interactive = bool;
   }
 
   wrongClick() {

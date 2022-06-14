@@ -2,16 +2,7 @@ import { Container, Graphics, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
 
 export class Image extends Sprite {
-  constructor(
-    x = 0,
-    y = 0,
-    texture,
-    name = "name",
-    width,
-    height,
-    interactive = false,
-    buttonMode = false
-  ) {
+  constructor(x = 0, y = 0, texture, name = "name", width, height, interactive = false, buttonMode = false) {
     super(texture);
     this.anchor.set(0.5);
     this.name = name;
@@ -22,10 +13,6 @@ export class Image extends Sprite {
     this.interactive = interactive;
     this.buttonMode = buttonMode;
   }
-  callName() {
-    console.log(`this box name is ${this.name}`);
-    return `${this.name}`;
-  }
 }
 export class Texts extends Text {
   constructor(option) {
@@ -33,10 +20,7 @@ export class Texts extends Text {
     this.text = option.text;
     this.anchor.set(0.5);
 
-    this.position.set(
-      option.x + option.width / 2,
-      option.y + option.height / 2
-    );
+    this.position.set(option.x + option.width / 2, option.y + option.height / 2);
     this.style = option.style;
   }
 }
@@ -52,23 +36,46 @@ export class Circle extends Graphics {
     this.on("click", func);
   }
 }
-export class Rectangle extends Graphics {
-  constructor(
-    x,
-    y,
-    width,
-    height,
-    color,
-    radius = 0,
-    interactive = false,
-    buttonMode = false
-  ) {
+export class Picture extends Sprite {
+  constructor(option, func) {
+    let texture = new Texture.from(option.url);
+    super(texture, func);
+    this.anchor.set(0.5);
+    this.name = option.name;
+    this.width = option.width;
+    this.height = option.height;
+    this.x = option.x;
+    this.y = option.y;
+    this.interactive = option.interactive;
+    this.buttonMode = option.buttonMode;
+
+    func ? this.on("click", func) : null;
+  }
+}
+export class Box extends Graphics {
+  constructor(option, func) {
     super();
-    this.interactive = interactive;
-    this.buttonMode = buttonMode;
-    this.beginFill(color);
-    this.lineStyle(3, 0x000000, 1);
-    this.drawRoundedRect(x, y, width, height, radius);
+    this._drawRect(option);
+    this._setText(option.textOption);
+    this._enableBox();
+
+    func ? this.on("click", func) : null;
+  }
+
+  _drawRect(option) {
+    this.beginFill(option.color);
+    this.lineStyle(1, 0x000000, option.line);
+    this.drawRoundedRect(option.x, option.y, option.width, option.height, option.radius);
     this.endFill();
+  }
+
+  _setText(option) {
+    const t = new Texts(option);
+    this.addChild(t);
+  }
+
+  _enableBox() {
+    this.interactive = true;
+    this.buttonMode = true;
   }
 }

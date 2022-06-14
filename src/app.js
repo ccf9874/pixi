@@ -1,53 +1,91 @@
 import { Container } from "pixi.js";
 import * as style from "./style";
-import Box from "./components/tool/Box";
-import Button from "./components/tool/Button";
-import Picture from "./components/tool/picture";
-import { Texts } from "./components/tool/tool.js";
-import GameView from "./components/GameView";
+import { Box, Picture, Texts } from "./components/tool/tool.js";
+
+import GameView from "./components/View/GameView";
 
 import UIUtil from "./components/UIUtil";
 
 export default class App {
   constructor() {
     this.con = new Container();
-    const BoxContainer = this.makeBox({
+    const BoxContainer = UIUtil.makeBtn({
       x: 300,
       y: 50,
       width: 600,
       height: 800,
       color: 0xd0a040,
       line: true,
-      text: "",
+      textOption: {
+        text: "",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
     });
 
-    const header = this.makeBox({
+    const header = UIUtil.makeBtn({
       x: 300,
       y: 50,
       width: 600,
       height: 80,
       color: 0xd0a040,
       line: 1,
-      text: "캐릭터 짝 맞추기 게임",
+      textOption: {
+        text: "캐릭터 짝 맞추기 게임",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
     });
-    const nav = this.makeBox({
+    const nav = UIUtil.makeBtn({
       x: 301,
       y: 140,
       width: 598,
       height: 50,
       color: 0xd0a040,
       line: false,
-      text: "(캐릭터 이름)과 같은 색 버튼을 터치해주세요!",
+      textOption: {
+        text: "(캐릭터 이름)과 같은 색 버튼을 터치해주세요!",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
     });
-    const readyBox = this.makeBox({
+    const readyBox = UIUtil.makeBtn({
       x: 300,
       y: 50,
       width: 600,
       height: 800,
       color: 0xbbbbbb,
       line: false,
-      text: "",
       alpah: 0.5,
+      textOption: {
+        text: "",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
     });
     const char = this.renderImage({
       url: "static/char.png",
@@ -80,8 +118,14 @@ export default class App {
         height: 50,
         color: 0xaaaaaa,
         line: true,
-        text: "게임 시작",
-        style: style.normalText,
+        textOption: {
+          text: "게임 시작",
+          x: 500,
+          y: 300,
+          width: 200,
+          height: 200,
+          style: style.normalText,
+        },
       },
       () => StartGame()
     );
@@ -104,8 +148,8 @@ export default class App {
 
     const StartGame = () => {
       this.con.removeChild(nav, char, startBtn);
-      this.con.addChild(back, gameView.con, readyBox, WaitText);
-      gameView.onInteractive(false);
+      this.con.addChild(back, this.gameView.con, readyBox, WaitText);
+      this.gameView.onInteractive(false);
 
       setTimeout(() => {
         this.con.removeChild(WaitText);
@@ -114,27 +158,27 @@ export default class App {
 
       setTimeout(() => {
         this.con.removeChild(WaitText2, readyBox);
-        gameView.progressBar.TickerStart();
-        gameView.onInteractive(true);
+        this.gameView.progressBar.TickerStart();
+        this.gameView.onInteractive(true);
       }, 1250);
-      gameView.charRender();
+      this.gameView.charRender();
     };
 
     const ToBack = () => {
-      gameView.progressBar.time = 0;
-      gameView.progressBar.seconds.text = "60 초";
-      gameView.progressBar.outerBar.width = 400;
-      gameView.scoreNumber = 0;
-      gameView.score.text = "0 점";
-      gameView.progressBar.close.endScore.text = "0 점";
-      gameView.progressBar.tickers.stop();
-      this.con.removeChild(readyBox, back, gameView.con);
+      this.gameView.progressBar.time = 0;
+      this.gameView.progressBar.seconds.text = "60 초";
+      this.gameView.progressBar.outerBar.width = 400;
+      this.gameView.scoreNumber = 0;
+      this.gameView.score.text = "0 점";
+      this.gameView.progressBar.close.endScore.text = "0 점";
+      this.gameView.progressBar.tickers.stop();
+      this.con.removeChild(readyBox, back, this.gameView.con);
       this.con.addChild(nav, char, startBtn);
     };
 
     this.con.addChild(BoxContainer, header, nav, char, startBtn);
 
-    gameView.progressBar.close.exitButton.on("click", () => ToBack());
+    this.gameView.progressBar.close.exitButton.on("click", () => ToBack());
   }
 
   _ToBack() {
@@ -149,18 +193,18 @@ export default class App {
     this.con.addChild(nav, char, startBtn);
   }
 
-  makeBox(option) {
-    const bgBox = new Box(option);
-    const boxText = new Texts(option);
-    bgBox.addChild(boxText);
-    option.alpah ? (bgBox.alpha = option.alpah) : null;
-    return bgBox;
-  }
+  // makeBox(option) {
+  //   const bgBox = new Box(option);
+  //   const boxText = new Texts(option);
+  //   bgBox.addChild(boxText);
+  //   option.alpah ? (bgBox.alpha = option.alpah) : null;
+  //   return bgBox;
+  // }
 
-  makeBtn(option, func) {
-    const Btn = new Button(option, func);
-    return Btn;
-  }
+  // makeBtn(option, func) {
+  //   const Btn = new Box(option, func);
+  //   return Btn;
+  // }
 
   renderImage(option, func) {
     const imgBox = new Container();

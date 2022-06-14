@@ -1,15 +1,52 @@
 import * as PIXI from "pixi.js";
 import { Container } from "pixi.js";
-import Close from "./tool/close";
-import { Rectangle, Texts } from "./tool/tool";
+import Close from "../components/Popup/CloseView";
+import { Box, Texts } from "./tool/tool";
+import UIUtil from "./UIUtil";
 
 export default class ProgressBar {
   constructor(redBtn, blueBtn, greenBtn) {
     this.con = new Container();
     this.timeBar = new Container();
     this.timeBar.position.set(400, 190);
-    this.innerBar = new Rectangle(0, 0, 400, 30, 0xafabab, 10);
-    this.outerBar = new Rectangle(0, 0, 400, 30, 0xd8f0d9, 10);
+    this.innerBar = UIUtil.makeBtn({
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 30,
+      color: 0xafabab,
+      radius: 10,
+      textOption: {
+        text: "",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
+    });
+    this.outerBar = UIUtil.makeBtn({
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 30,
+      color: 0xd8f0d9,
+      radius: 10,
+      textOption: {
+        text: "",
+        x: 500,
+        y: 300,
+        width: 200,
+        height: 200,
+        style: {
+          fill: 0xffffff,
+          fontSize: 50,
+        },
+      },
+    });
     this.timeBar.outer = this.outerBar;
     this.seconds = new Texts({
       text: "60 초",
@@ -47,10 +84,7 @@ export default class ProgressBar {
       if (this.outerBar.width < 0) {
         this.tickers.stop();
         this.con.addChild(this.close.con);
-        this.redBtn.interactive =
-          this.blueBtn.interactive =
-          this.greenBtn.interactive =
-            false;
+        this.redBtn.interactive = this.blueBtn.interactive = this.greenBtn.interactive = false;
       }
       this.tickers.update(this.time);
     });
