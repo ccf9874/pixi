@@ -2,7 +2,16 @@ import { Container, Graphics, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
 
 export class Image extends Sprite {
-  constructor(x = 0, y = 0, texture, name = "name", width, height, interactive = false, buttonMode = false) {
+  constructor(
+    x = 0,
+    y = 0,
+    texture,
+    name = "name",
+    width,
+    height,
+    interactive = false,
+    buttonMode = false
+  ) {
     super(texture);
     this.anchor.set(0.5);
     this.name = name;
@@ -14,28 +23,7 @@ export class Image extends Sprite {
     this.buttonMode = buttonMode;
   }
 }
-export class Texts extends Text {
-  constructor(option) {
-    super();
-    this.text = option.text;
-    this.anchor.set(0.5);
 
-    this.position.set(option.x + option.width / 2, option.y + option.height / 2);
-    this.style = option.style;
-  }
-}
-export class Circle extends Graphics {
-  constructor(option, func) {
-    super();
-    this.name = option.name;
-    this.interactive = true;
-    this.buttonMode = true;
-    this.beginFill(option.color);
-    this.lineStyle(3, 0x000000, 1);
-    this.drawCircle(option.x, option.y, option.d);
-    this.on("click", func);
-  }
-}
 export class Picture extends Sprite {
   constructor(option, func) {
     let texture = new Texture.from(option.url);
@@ -52,21 +40,53 @@ export class Picture extends Sprite {
     func ? this.on("click", func) : null;
   }
 }
+
+export class Texts extends Text {
+  constructor(option) {
+    super();
+    this.text = option.text;
+    this.anchor.set(0.5);
+    this.position.set(
+      option.x + option.width / 2,
+      option.y + option.height / 2
+    );
+    this.style = option.style;
+  }
+}
+
+export class Circle extends Graphics {
+  constructor(option, func) {
+    super();
+    this.name = option.name;
+    this.interactive = false;
+    this.buttonMode = false;
+    this.beginFill(option.color);
+    this.lineStyle(3, 0x000000, 1);
+    this.drawCircle(option.x, option.y, option.d);
+    this.on("click", func);
+  }
+}
 export class Box extends Graphics {
   constructor(option, func) {
     super();
     this._drawRect(option);
-    this._setText(option.textOption);
-    this._enableBox();
-
+    this._enableBox(option.interactive);
+    option.textOption ? this._setText(option.textOption) : null;
     func ? this.on("click", func) : null;
   }
 
   _drawRect(option) {
     this.beginFill(option.color);
     this.lineStyle(1, 0x000000, option.line);
-    this.drawRoundedRect(option.x, option.y, option.width, option.height, option.radius);
+    this.drawRoundedRect(
+      option.x,
+      option.y,
+      option.width,
+      option.height,
+      option.radius
+    );
     this.endFill();
+    this.alpha = option.alpha ? option.alpha : 1;
   }
 
   _setText(option) {
@@ -74,8 +94,8 @@ export class Box extends Graphics {
     this.addChild(t);
   }
 
-  _enableBox() {
-    this.interactive = true;
-    this.buttonMode = true;
+  _enableBox(bool) {
+    this.interactive = bool;
+    this.buttonMode = bool;
   }
 }
