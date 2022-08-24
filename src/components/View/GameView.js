@@ -40,30 +40,21 @@ export default class GameView extends BaseView {
       interactive: false,
       buttonMode: false,
     });
-    this.red = UIUtil.makeCircle(
-      { x: 400, y: 700, d: 50, color: 0xff0000 },
-      () => {
-        console.log("red running");
-        this.score.text = "red click";
-        this._onButtonClick("charList1");
-      }
-    );
-    this.blue = UIUtil.makeCircle(
-      { x: 600, y: 700, d: 50, color: 0x0071c1 },
-      () => {
-        console.log("blue running");
-        this.score.text = "blue click";
-        this._onButtonClick("charList3");
-      }
-    );
-    this.green = UIUtil.makeCircle(
-      { x: 800, y: 700, d: 50, color: 0x70ad46 },
-      () => {
-        console.log("green running");
-        this.score.text = "green click";
-        this._onButtonClick("charList2");
-      }
-    );
+    this.red = UIUtil.makeCircle({ x: 400, y: 700, d: 50, color: 0xff0000 }, () => {
+      console.log("red running");
+      this.score.text = "red click";
+      this._onButtonClick("charList1");
+    });
+    this.blue = UIUtil.makeCircle({ x: 600, y: 700, d: 50, color: 0x0071c1 }, () => {
+      console.log("blue running");
+      this.score.text = "blue click";
+      this._onButtonClick("charList3");
+    });
+    this.green = UIUtil.makeCircle({ x: 800, y: 700, d: 50, color: 0x70ad46 }, () => {
+      console.log("green running");
+      this.score.text = "green click";
+      this._onButtonClick("charList2");
+    });
     this.score = new UIUtil.makeText({
       text: "0 점",
       x: 500,
@@ -83,11 +74,7 @@ export default class GameView extends BaseView {
 
     this.scoreNumber = 0;
     this.srcList = []; // 1000ro
-    this.list = [
-      "static/charList1.png",
-      "static/charList2.png",
-      "static/charList3.png",
-    ];
+    this.list = ["static/charList1.png", "static/charList2.png", "static/charList3.png"];
     for (let i = 0; i < 1000; i++) {
       const charsrc = this.list[Math.floor(Math.random() * 3)];
       this.srcList.push(charsrc);
@@ -95,13 +82,7 @@ export default class GameView extends BaseView {
     this.viewList = this.srcList.slice(0, 6);
     this.restList = this.srcList.slice(6);
 
-    this.BoxContainer.addChild(
-      this.red,
-      this.green,
-      this.blue,
-      this.score,
-      this.progressBar.con
-    );
+    this.BoxContainer.addChild(this.red, this.green, this.blue, this.score, this.progressBar.con);
     this._charRender();
 
     let time = 0;
@@ -130,14 +111,7 @@ export default class GameView extends BaseView {
   _charRender() {
     for (let i = 0; i < 6; i++) {
       const charTexture = new Texture.from(this.viewList[i]);
-      const char = new Image(
-        600,
-        300 + i * 50,
-        charTexture,
-        "",
-        160 * 0.95 ** (6 - i),
-        160 * 0.95 ** (6 - i)
-      );
+      const char = new Image(600, 300 + i * 50, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
       this.charListContainer.addChild(char);
     }
     this.BoxContainer.addChild(this.charListContainer);
@@ -149,14 +123,7 @@ export default class GameView extends BaseView {
     this.scoreNumber += 100;
     for (let i = 0; i < 6; i++) {
       const charTexture = new Texture.from(this.viewList[i]);
-      const char = new Image(
-        600,
-        300 + i * 50,
-        charTexture,
-        "",
-        160 * 0.95 ** (6 - i),
-        160 * 0.95 ** (6 - i)
-      );
+      const char = new Image(600, 300 + i * 50, charTexture, "", 160 * 0.95 ** (6 - i), 160 * 0.95 ** (6 - i));
       this.charListContainer.addChild(char);
     }
   }
@@ -170,12 +137,8 @@ export default class GameView extends BaseView {
     }
     console.log(name, this.scoreNumber);
   }
-
   _onInteractive(bool) {
-    this.red.interactive =
-      this.blue.interactive =
-      this.green.interactive =
-        bool;
+    this.red.interactive = this.blue.interactive = this.green.interactive = bool;
     this.red.buttonMode = this.blue.buttonMode = this.green.buttonMode = bool;
   }
   _wrongClick() {
