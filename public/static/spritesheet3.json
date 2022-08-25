@@ -1,0 +1,40 @@
+{
+  "frames": {
+    "progress_1.png": {
+      "frame": { "x": 0, "y": 0, "w": 75, "h": 122 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 75, "h": 122 },
+      "sourceSize": { "w": 75, "h": 122 },
+      "anchor": { "x": 0.5, "y": 0.5 }
+    },
+    "progress_2.png": {
+      "frame": { "x": 0, "y": 122, "w": 74, "h": 137 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 74, "h": 137 },
+      "sourceSize": { "w": 74, "h": 137 },
+      "anchor": { "x": 0.5, "y": 0.5 }
+    },
+    "progress_3.png": {
+      "frame": { "x": 0, "y": 259, "w": 72, "h": 142 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 72, "h": 142 },
+      "sourceSize": { "w": 72, "h": 142 },
+      "anchor": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "animations": {
+    "progress": ["progress_1.png", "progress_2.png", "progress_3.png"]
+  },
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "spritesheet3.png",
+    "format": "RGBA8888",
+    "size": { "w": 75, "h": 401 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:029024882cb452547db205d42ad3d30f:9f540f2282a55f002edea395da86bc8c:690a5915457cf10c505d982c8a31dfdc$"
+  }
+}
